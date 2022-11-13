@@ -2,7 +2,7 @@ chartName: greeting-app
 
 deployment: 
   replicaCount: 1
-  image: ghcr.io/jamesw201/greeter-app
+  image: k3d-testkube-registry:6000/greeter:latest
   tag: latest
 
 config:

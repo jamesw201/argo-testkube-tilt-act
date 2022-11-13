@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Values.chartName }}-svc"
+  labels:
+    app: {{ .Values.chartName }}
+spec:
+  ports:
+  - port: {{ .Values.config.port }}
+    protocol: TCP
+  selector:
+    app: {{ .Values.chartName }}

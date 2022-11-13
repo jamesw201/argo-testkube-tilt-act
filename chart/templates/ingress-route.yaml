@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: "{{ .Values.chartName }}-ingress-route"
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: {{ .Values.ingress.rule}}
+    kind: Rule
+    services:
+    - name: "{{ .Values.chartName }}-svc"
+      port: {{ .Values.config.port }}

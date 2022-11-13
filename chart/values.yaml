@@ -1,0 +1,13 @@
+chartName: greeting-app
+
+deployment: 
+  replicaCount: 1
+  image: ghcr.io/jamesw201/greeter-app
+  tag: latest
+
+config:
+  port: 8000 #should be the same as deployment port
+  greeting: Hello
+
+ingress:
+  rule: PathPrefix(`/`)

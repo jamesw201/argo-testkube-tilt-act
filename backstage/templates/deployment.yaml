@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "backstage.fullname" . }}
+  labels:
+    {{- include "backstage.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "backstage.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "backstage.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          env:
+          {{- if .Values.postgres.enabled }}
+            - name: POSTGRES_HOST
+              value: {{ .Values.postgres.host | quote }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.postgres.port | quote }}
+            - name: POSTGRES_USER
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.postgres.credentials.secretName }}
+                 key: {{ .Values.postgres.credentials.userKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.postgres.credentials.secretName }}
+                 key: {{ .Values.postgres.credentials.passKey }}
+          {{- end }}
+          {{- if .Values.github.enabled }}
+            - name: GITHUB_APP_ID
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.appIdKey }}
+            - name: AUTH_GITHUB_CLIENT_ID
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.authClientIDKey }}
+            - name: AUTH_GITHUB_CLIENT_SECRET
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.authClientSecretKey }}
+            - name: GITHUB_TOKEN
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.tokenKey }}
+            - name: GITHUB_SSH_PRIVATE_KEY
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.sshPrivateKey }}
+            - name: GITHUB_WEBHOOK_URL
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.webhookUrlKey }}
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.clientIDKey }}
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.clientSecretKey }}
+            - name: GITHUB_WEBHOOK_SECRET
+              valueFrom:
+               secretKeyRef:
+                 name: {{ .Values.github.credentials.secretName }}
+                 key: {{ .Values.github.credentials.webhookSecretKey }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

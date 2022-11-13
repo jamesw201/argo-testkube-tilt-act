@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.chartName }}
+  labels:
+    app: {{ .Values.chartName }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.chartName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.chartName }}
+    spec:
+      containers:
+      - name: {{ .Values.chartName }}
+        image: "{{ .Values.deployment.image }}:{{ .Values.deployment.tag }}"
+        ports:
+        - containerPort: {{ .Values.config.port }}
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ .Values.chartName }}-config"
+              key: port
+        - name: GREETING
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ .Values.chartName }}-config"
+              key: greeting
+
+        

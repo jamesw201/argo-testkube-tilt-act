@@ -6,8 +6,8 @@ deployment:
   tag: latest
 
 config:
-  port: 8000 #should be the same as deployment port
-  greeting: Hello
+  port: 8090 #should be the same as deployment port
+  greeting: Hello you bastard
 
 ingress:
   rule: PathPrefix(`/`)

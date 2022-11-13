@@ -4,7 +4,7 @@ This repository contains a demo of ArgoCD, TestKube, Act and Tilt.
 The idea is to have ArgoCD deploy a simple application with TestKube managing its tests and being called by Github Actions managed by Act locally.
 
 ### tasks
-- [ ] use Act to build and publish the docker image
+- [√] use Act/github actions to build and publish the docker image to a local registry
 - [ ] have ArgoCD deploy the application to the local cluster
 - [ ] create a testkube test
 - [ ] run the testkube test from Act

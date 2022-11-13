@@ -16,10 +16,10 @@ spec:
       project: default
       syncPolicy:
         automated:
-          allowEmpoty: true
+          allowEmpty: true
           prune: true
       source:
-        repoURL: git@github.com:jamesw201/argocd-demo-manifests.git
+        repoURL: https://github.com/jamesw201/argocd-demo-manifests.git
         targetRevision: HEAD
         path: "{{environment}}/greeting-app"
       destination:

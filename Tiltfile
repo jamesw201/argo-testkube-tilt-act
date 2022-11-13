@@ -26,28 +26,28 @@ k8s_resource(
   new_name="greeter-application-set"
 )
 
-#Dev Deployment
-docker_build('greeter',
-  context='.',
-  dockerfile='./app/docker/Dockerfile',
-  entrypoint='/main',
-  only=[
-      './app/cmd/main.go',
-      './app/go.mod',
-      './app/go.sum'
-  ],
-  live_update=[
-    sync('./app/go.mod', '/service/go.mod'),
-    sync('./app/go.sum', '/service/go.sum'),
-    sync('./app/cmd', '/service/cmd'),
-  ]
-)
+# #Dev Deployment
+# docker_build('greeter',
+#   context='.',
+#   dockerfile='./app/docker/Dockerfile',
+#   entrypoint='/main',
+#   only=[
+#       './app/cmd/main.go',
+#       './app/go.mod',
+#       './app/go.sum'
+#   ],
+#   live_update=[
+#     sync('./app/go.mod', '/service/go.mod'),
+#     sync('./app/go.sum', '/service/go.sum'),
+#     sync('./app/cmd', '/service/cmd'),
+#   ]
+# )
 
-helm_resource(
-  name="greeter",
-  namespace='dev',
-  chart="./chart",
-  image_deps= ["greeter"],
-  image_keys= [('deployment.image', 'deployment.tag')],
-  port_forwards=["5555:8000"]
-)
+# helm_resource(
+#   name="greeter",
+#   namespace='dev',
+#   chart="./chart",
+#   image_deps= ["greeter"],
+#   image_keys= [('deployment.image', 'deployment.tag')],
+#   port_forwards=["5555:8000"]
+# )
